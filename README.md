@@ -3,7 +3,7 @@
 
 ## 相关
 博客文章：
-[腾讯Shadow浅析及应用及BlackShadow](https://blog.niunaijun.top/index.php/archives/teng-xun-shadowqian-xi-ji-ying-yong.html)
+[腾讯Shadow浅析及应用及BlackShadow](https://blog.niunaijun.top/index.php/archives/blackshadow.html)
 
 Tencent Shadow：
 https://github.com/Tencent/Shadow
