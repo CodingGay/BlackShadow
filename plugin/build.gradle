@@ -1,0 +1,50 @@
+plugins {
+    id 'com.android.application'
+    id 'com.tencent.shadow.plugin'
+}
+
+android {
+    namespace "top.niunaijun.shadow.plugin"
+    compileSdk rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        applicationId "top.niunaijun.shadow.plugin"
+        minSdk rootProject.ext.minSdkVersion
+        targetSdk rootProject.ext.targetSdkVersion
+        versionName "1.0"
+        versionCode 1
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    productFlavors {
+        plugin {
+            applicationId rootProject.ext.hostPackageName
+        }
+    }
+
+    aaptOptions {
+        additionalParameters "--package-id", "0x7E", "--allow-reserved-package-id"
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.4.0'
+
+    //Shadow Transform后业务代码会有一部分实际引用runtime中的类
+    //如果不以compileOnly方式依赖，会导致其他Transform或者Proguard找不到这些类
+    pluginCompileOnly "com.tencent.shadow.core:runtime:${project.shadowVersion}"
+}
+

@@ -1,0 +1,42 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    namespace 'top.niunaijun.shadow'
+    compileSdk rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdk rootProject.ext.minSdkVersion
+        targetSdk rootProject.ext.targetSdkVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation "com.tencent.shadow.dynamic:host:$rootProject.ext.shadowVersion"
+    implementation "com.tencent.shadow.core:common:$rootProject.ext.shadowVersion"
+    implementation "com.tencent.shadow.core:activity-container:$rootProject.ext.shadowVersion"
+    implementation "com.tencent.shadow.core:loader:$rootProject.ext.shadowVersion"
+    implementation "com.tencent.shadow.dynamic:loader:$rootProject.ext.shadowVersion"
+    implementation "com.tencent.shadow.dynamic:loader-impl:$rootProject.ext.shadowVersion"
+    implementation "com.tencent.shadow.dynamic:host-multi-loader-ext:$rootProject.ext.shadowVersion"
+    implementation "com.tencent.shadow.dynamic:manager-multi-loader-ext:$rootProject.ext.shadowVersion"
+
+    implementation "com.tencent:mmkv-static:$rootProject.ext.mmkvVersion"
+    implementation "com.google.code.gson:gson:${rootProject.ext.gsonVersion}"
+
+    implementation project(":black-shadow:ManifestEditor")
+}

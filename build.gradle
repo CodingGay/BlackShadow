@@ -1,0 +1,30 @@
+buildscript {
+    ext.kotlinVersion = "1.8.22"
+    ext.shadowVersion = "1.0-local"
+    ext.javassistVersion = "3.28.0-GA"
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.tencent.shadow.core:gradle-plugin:$shadowVersion"
+        classpath "com.tencent.shadow.core:runtime:$shadowVersion"
+        classpath "com.tencent.shadow.core:activity-container:$shadowVersion"
+        classpath "org.javassist:javassist:$javassistVersion"
+    }
+}
+
+ext {
+    hostPackageName = "top.niunaijun.shadow.host"
+    minSdkVersion = 21
+    compileSdkVersion = 31
+    targetSdkVersion = 28
+
+    gsonVersion = "2.10.1"
+    okhttp3Version = '4.11.0'
+    mmkvVersion = '1.3.3'
+}

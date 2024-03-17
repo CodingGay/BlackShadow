@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+
+        <service
+            android:name="top.niunaijun.shadow.service.StubService"
+            android:exported="false"
+            android:process="@string/black_shadow_service_name" />
+
+        <provider
+            android:name="top.niunaijun.shadow.service.BSContentProvider"
+            android:authorities="${applicationId}.BlackShadowContentProvider"
+            android:exported="false"
+            android:process="@string/black_shadow_service_name" />
+
+        <activity
+            android:name="top.niunaijun.shadow.container.PluginProxyActivity"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|layoutDirection"
+            android:hardwareAccelerated="true"
+            android:launchMode="standard"
+            android:multiprocess="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/PluginContainerActivity" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContainerContentProvider$P0"
+            android:authorities="${applicationId}.blackshadow.dynamic0"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin0" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContentProvider$P0"
+            android:authorities="${applicationId}.blackshadow.provider0"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin0" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContainerContentProvider$P1"
+            android:authorities="${applicationId}.blackshadow.dynamic1"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin1" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContentProvider$P1"
+            android:authorities="${applicationId}.blackshadow.provider1"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin1" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContainerContentProvider$P2"
+            android:authorities="${applicationId}.blackshadow.dynamic2"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin2" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContentProvider$P2"
+            android:authorities="${applicationId}.blackshadow.provider2"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin2" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContainerContentProvider$P3"
+            android:authorities="${applicationId}.blackshadow.dynamic3"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin3" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContentProvider$P3"
+            android:authorities="${applicationId}.blackshadow.provider3"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin3" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContainerContentProvider$P4"
+            android:authorities="${applicationId}.blackshadow.dynamic4"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin4" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContentProvider$P4"
+            android:authorities="${applicationId}.blackshadow.provider4"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin4" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContainerContentProvider$P5"
+            android:authorities="${applicationId}.blackshadow.dynamic5"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin5" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContentProvider$P5"
+            android:authorities="${applicationId}.blackshadow.provider5"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin5" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContainerContentProvider$P6"
+            android:authorities="${applicationId}.blackshadow.dynamic6"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin6" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContentProvider$P6"
+            android:authorities="${applicationId}.blackshadow.provider6"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin6" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContainerContentProvider$P7"
+            android:authorities="${applicationId}.blackshadow.dynamic7"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin7" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContentProvider$P7"
+            android:authorities="${applicationId}.blackshadow.provider7"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin7" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContainerContentProvider$P8"
+            android:authorities="${applicationId}.blackshadow.dynamic8"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin8" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContentProvider$P8"
+            android:authorities="${applicationId}.blackshadow.provider8"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin8" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContainerContentProvider$P9"
+            android:authorities="${applicationId}.blackshadow.dynamic9"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin9" />
+
+        <provider
+            android:name="top.niunaijun.shadow.container.PluginContentProvider$P9"
+            android:authorities="${applicationId}.blackshadow.provider9"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:process=":plugin9" />
+
+    </application>
+</manifest>
