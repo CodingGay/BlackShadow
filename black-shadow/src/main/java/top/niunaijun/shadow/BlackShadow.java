@@ -54,6 +54,10 @@ public class BlackShadow {
         return get().mContext;
     }
 
+    public static String getHostPackageName() {
+        return get().mContext.getPackageName();
+    }
+
     public static boolean isHostProcess() {
         return get().mProcessType == ProcessType.Host;
     }

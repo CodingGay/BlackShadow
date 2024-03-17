@@ -16,6 +16,7 @@ import com.wind.meditor.ManifestEditorMain;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -91,8 +92,16 @@ public class BSManagerService extends IBSManagerService.Stub implements IBlackSh
                     // 复制so文件
                     NativeUtils.copyNativeLib(new File(pluginPath), BSFileManager.get().getPluginLibsDir(pluginKey, version));
 
+                    List<String> allHostWhiteList = new ArrayList<>();
+                    if (hostWhiteList != null) {
+                        allHostWhiteList.addAll(Arrays.asList(hostWhiteList));
+                    }
+                    allHostWhiteList.add("top.niunaijun.shadow");
+                    allHostWhiteList.add("top.niunaijun.shadow.*");
+                    allHostWhiteList.add("top.niunaijun.shadow.**");
+
                     LoadParameters loadParameters = new LoadParameters(null, pluginKey, null,
-                            hostWhiteList);
+                            allHostWhiteList.toArray(new String[0]));
                     Parcel parcel = Parcel.obtain();
                     loadParameters.writeToParcel(parcel, 0);
                     InstalledApk installedApk = installPlugin(pluginKey, pluginApk, version);
