@@ -1,5 +1,6 @@
 package top.niunaijun.shadow.service;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -112,6 +113,10 @@ public class BSManagerService extends IBSManagerService.Stub implements IBlackSh
                             parcel.marshall()
                     );
                     parcel.recycle();
+                    // 强制使用package的包名，否则是无法启动的
+                    if (launcher != null && launcher.getComponent() != null) {
+                        launcher.setComponent(new ComponentName(packageArchiveInfo.packageName, launcher.getComponent().getClassName()));
+                    }
                     mInstalledApkMap.put(pluginKey, new InstalledPlugin(pluginKey, plugin, packageArchiveInfo, launcher));
                     save();
                     mLogger.debug("installPlugin OK: " + installedApk);
