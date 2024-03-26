@@ -9,7 +9,10 @@ Tencent Shadow：
 https://github.com/Tencent/Shadow
 
 ## 基于Shadow的技术方案
-BlackShadow使用的是非动态方案，支持同时最多10个插件运行，分别都是各自单独的进程。install与launch都有boolean返回值，可反馈出插件是否安装/启动成功。
+BlackShadow使用的是非动态方案
+- 支持同时最多10个插件运行，分别都是各自单独的进程。
+- install与launch都有boolean返回值，可反馈出插件是否安装/启动成功。
+- 支持插件内打开/查询/卸载/安装，其他插件。
 
 ## 未实现
 - Activity栈的管理，目前统一打开standard Activity
