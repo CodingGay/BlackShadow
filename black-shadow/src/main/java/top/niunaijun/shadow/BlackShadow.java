@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import top.niunaijun.shadow.R;
 import top.niunaijun.shadow.common.InstallResult;
 import top.niunaijun.shadow.common.InstalledPlugin;
 import top.niunaijun.shadow.common.RunningPlugin;
@@ -99,7 +98,7 @@ public class BlackShadow {
     }
 
     private IBSManagerService getBlackShadowService() {
-        if (mBSManagerService != null && mBSManagerService.asBinder().isBinderAlive()) {
+        if (mBSManagerService != null && mBSManagerService.asBinder().isBinderAlive() && mBSManagerService.asBinder().pingBinder()) {
             return mBSManagerService;
         }
         Bundle call = ProviderCallCompat.callSafely(getContext().getPackageName() + ".BlackShadowContentProvider", "", null, null);
@@ -108,6 +107,12 @@ public class BlackShadow {
         }
         IBinder service = call.getBinder("service");
         mBSManagerService = IBSManagerService.Stub.asInterface(service);
+        if (mBSManagerService != null) {
+            try {
+                mBSManagerService.asBinder().linkToDeath(() -> mBSManagerService = null, 0);
+            } catch (RemoteException ignored) {
+            }
+        }
         return getBlackShadowService();
     }
 
