@@ -11,7 +11,9 @@ import com.tencent.shadow.core.runtime.ShadowApplication;
 import com.tencent.shadow.core.runtime.container.ContentProviderDelegateProviderHolder;
 import com.tencent.shadow.core.runtime.container.DelegateProviderHolder;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import top.niunaijun.shadow.common.PluginConfig;
@@ -30,9 +32,8 @@ public class BlackShadowClient extends IBlackShadowClient.Stub {
     private static final BlackShadowClient sClient = new BlackShadowClient();
     private final Logger mLogger = LoggerFactory.getLogger(BlackShadowClient.class);
 
-    private PluginConfig mConfig;
-    private final AtomicBoolean isBind = new AtomicBoolean(false);
-    private boolean bindOk = false;
+    private final Map<String, PluginConfig> mConfigs = new HashMap<>();
+    private final Map<String, BlackShadowClientConfig> mClientConfig = new HashMap<>();
     private BSPluginLoader mPluginLoader;
 
     public static BlackShadowClient get() {
@@ -40,40 +41,47 @@ public class BlackShadowClient extends IBlackShadowClient.Stub {
     }
 
     public void initConfig(PluginConfig pluginConfig) {
-        if (this.mConfig != null && !Objects.equals(this.mConfig.getPluginKey(), pluginConfig.getPluginKey())) {
+        if (pluginConfig == null || mConfigs.containsKey(pluginConfig.getPluginKey())) {
             return;
         }
-        this.mConfig = pluginConfig;
-        mLogger.debug("initConfig: " + mConfig);
-    }
+        this.mClientConfig.put(pluginConfig.getPluginKey(), new BlackShadowClientConfig());
+        this.mConfigs.put(pluginConfig.getPluginKey(), pluginConfig);
 
-    public PluginConfig getConfig() {
-        return mConfig;
-    }
-
-    public String getDelegateProviderKey() {
-        if (this.mConfig != null) {
-            return mConfig.getPluginKey();
+        // 任意一个就可以了
+        if (this.mPluginLoader == null) {
+            this.mPluginLoader = new BSPluginLoader(BlackShadow.getContext(), pluginConfig.getBPid());
+            this.mPluginLoader.onCreate();
+            DelegateProviderHolder.setDelegateProvider(mPluginLoader.getDelegateProviderKey(), mPluginLoader);
+            ContentProviderDelegateProviderHolder.setContentProviderDelegateProvider(mPluginLoader);
         }
-        return "DEFAULT-KEY";
+        mLogger.debug("initConfig: " + pluginConfig);
+    }
+
+    public ArrayList<PluginConfig> getConfig() {
+        return new ArrayList<>(mConfigs.values());
     }
 
     @Override
-    public synchronized boolean bindApplication() {
-        if (isBind.getAndSet(true)) {
-            return bindOk;
+    public synchronized boolean bindApplication(String key) {
+        BlackShadowClientConfig blackShadowClientConfig = mClientConfig.get(key);
+        if (blackShadowClientConfig == null) {
+            mLogger.debug("bindApplication mClientConfig: " + key + " not found");
+            return false;
         }
-        mLogger.debug("bindApplication: " + mConfig);
-        mPluginLoader = new BSPluginLoader(BlackShadow.getContext(), mConfig);
-        DelegateProviderHolder.setDelegateProvider(mPluginLoader.getDelegateProviderKey(), mPluginLoader);
-        ContentProviderDelegateProviderHolder.setContentProviderDelegateProvider(mPluginLoader);
-
+        if (blackShadowClientConfig.isBind.getAndSet(true)) {
+            return blackShadowClientConfig.bindOk;
+        }
+        mLogger.debug("bindApplication: " + key);
+        PluginConfig mConfig = mConfigs.get(key);
+        if (mConfig == null) {
+            mLogger.debug("bindApplication mConfigs: " + key + " not found");
+            return false;
+        }
         try {
-            mPluginLoader.onCreate();
             mPluginLoader.loadPlugin(mConfig.getInstalledApk()).get();
-            hackShadowApplicationInfo();
-            mPluginLoader.callApplicationOnCreate(mConfig.getPluginKey());
-            this.bindOk = true;
+            hackShadowApplicationInfo(key);
+            mPluginLoader.callApplicationOnCreate(key);
+            blackShadowClientConfig.bindOk = true;
             return true;
         } catch (Throwable e) {
             e.printStackTrace();
@@ -94,9 +102,9 @@ public class BlackShadowClient extends IBlackShadowClient.Stub {
         }
     }
 
-    private void hackShadowApplicationInfo() {
+    private void hackShadowApplicationInfo(String key) {
         try {
-            PluginParts pluginParts = mPluginLoader.getPluginParts(mConfig.getPluginKey());
+            PluginParts pluginParts = mPluginLoader.getPluginParts(key);
             ShadowApplication shadowApplication = pluginParts.getApplication();
             shadowApplication.getApplicationInfo().packageName = BlackShadow.getContext().getPackageName();
 
@@ -107,5 +115,10 @@ public class BlackShadowClient extends IBlackShadowClient.Stub {
         } catch (Throwable t) {
             t.printStackTrace();
         }
+    }
+
+    private static class BlackShadowClientConfig {
+        final AtomicBoolean isBind = new AtomicBoolean(false);
+        boolean bindOk = false;
     }
 }

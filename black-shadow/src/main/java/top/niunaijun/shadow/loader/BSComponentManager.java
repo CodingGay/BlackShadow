@@ -32,11 +32,11 @@ import top.niunaijun.shadow.manager.BSManifestManager;
 public class BSComponentManager extends ComponentManager {
 
     private final Context mContext;
-    private final PluginConfig mPluginConfig;
+    private final int bPid;
 
-    public BSComponentManager(Context context, PluginConfig config) {
+    public BSComponentManager(Context context, int bPid) {
         this.mContext = context;
-        this.mPluginConfig = config;
+        this.bPid = bPid;
     }
 
     /**
@@ -53,7 +53,7 @@ public class BSComponentManager extends ComponentManager {
              * 这里配置对应的对应关系
              */
         }
-        return new ComponentName(mContext, BSManifestManager.getPluginProxyActivity(mPluginConfig.getBPid()));
+        return new ComponentName(mContext, BSManifestManager.getPluginProxyActivity(bPid));
     }
 
     /**
@@ -63,8 +63,8 @@ public class BSComponentManager extends ComponentManager {
     @Override
     public ContainerProviderInfo onBindContainerContentProvider(ComponentName pluginContentProvider) {
         return new ContainerProviderInfo(
-                BSManifestManager.getPluginContainerContentProviderClassName(mPluginConfig.getBPid()),
-                BSManifestManager.getPluginContainerContentProviderAuth(mPluginConfig.getBPid()));
+                BSManifestManager.getPluginContainerContentProviderClassName(bPid),
+                BSManifestManager.getPluginContainerContentProviderAuth(bPid));
     }
 
 }

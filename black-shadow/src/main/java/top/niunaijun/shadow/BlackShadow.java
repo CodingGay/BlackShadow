@@ -133,15 +133,19 @@ public class BlackShadow {
     }
 
     public InstallResult installPlugin(String pluginKey, File path, String[] hostWhiteList, Intent launcher) {
-        try {
-            return getBlackShadowService().installPlugin(pluginKey, path.getAbsolutePath(), hostWhiteList, launcher);
-        } catch (RemoteException e) {
-            return new InstallResult(false, e.getMessage());
-        }
+        return installPlugin(pluginKey, path, -1, hostWhiteList, launcher);
     }
 
     public InstallResult installPlugin(String pluginKey, File path, String[] hostWhiteList) {
         return installPlugin(pluginKey, path, hostWhiteList, null);
+    }
+
+    public InstallResult installPlugin(String pluginKey, File path, int process, String[] hostWhiteList, Intent launcher) {
+        try {
+            return getBlackShadowService().installPlugin(pluginKey, path.getAbsolutePath(), process, hostWhiteList, launcher);
+        } catch (RemoteException e) {
+            return new InstallResult(false, e.getMessage());
+        }
     }
 
     public boolean launchPlugin(String pluginKey, Intent intent) {

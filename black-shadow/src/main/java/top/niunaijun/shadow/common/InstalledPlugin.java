@@ -22,14 +22,16 @@ public class InstalledPlugin implements Parcelable {
     public long version;
     public final InstalledApk installedApk;
     public Intent launcher;
+    public int process;
 
-    public InstalledPlugin(String pluginKey, InstalledApk installedApk, PackageInfo packageInfo, Intent launcher) {
+    public InstalledPlugin(String pluginKey, InstalledApk installedApk, PackageInfo packageInfo, Intent launcher, int process) {
         this.packageInfo = packageInfo;
 
         this.pluginKey = pluginKey;
         this.version = packageInfo.versionCode;
         this.installedApk = installedApk;
         this.launcher = launcher;
+        this.process = process;
     }
 
     protected InstalledPlugin(Parcel in) {
@@ -38,6 +40,7 @@ public class InstalledPlugin implements Parcelable {
         installedApk = in.readParcelable(InstalledApk.class.getClassLoader());
         launcher = in.readParcelable(Intent.class.getClassLoader());
         packageInfo = in.readParcelable(PackageInfo.class.getClassLoader());
+        process = in.readInt();
     }
 
     @Override
@@ -47,6 +50,7 @@ public class InstalledPlugin implements Parcelable {
         dest.writeParcelable(installedApk, flags);
         dest.writeParcelable(launcher, flags);
         dest.writeParcelable(packageInfo, flags);
+        dest.writeInt(process);
     }
 
     @Override
@@ -79,6 +83,7 @@ public class InstalledPlugin implements Parcelable {
                 ", installedApk=" + installedApk +
                 ", launcher=" + launcher +
                 ", packageInfo=" + packageInfo +
+                ", process=" + process +
                 '}';
     }
 }

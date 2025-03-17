@@ -5,6 +5,6 @@ package top.niunaijun.shadow;
 import android.content.Intent;
 
 interface IBlackShadowClient {
-    boolean bindApplication();
+    boolean bindApplication(in String key);
     boolean startActivity(in Intent intent);
 }

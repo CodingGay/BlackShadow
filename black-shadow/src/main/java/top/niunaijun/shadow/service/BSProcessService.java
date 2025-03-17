@@ -11,6 +11,7 @@ import com.tencent.shadow.core.common.InstalledApk;
 import com.tencent.shadow.core.common.Logger;
 import com.tencent.shadow.core.common.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -44,14 +45,16 @@ public class BSProcessService implements IBlackShadowService {
         return sBSProcessService;
     }
 
-    public ProcessConfig startProcess(String pluginKey, InstalledApk installedApk) {
+    public ProcessConfig startProcess(String pluginKey, InstalledApk installedApk, int bPid) {
         synchronized (mProcessConfigMap) {
             ProcessConfig processConfig = mProcessConfigMap.get(pluginKey);
             if (processConfig != null && processConfig.getClient() != null) {
                 return processConfig;
             }
             mProcessConfigMap.remove(pluginKey);
-            int bPid = getAvailableBPid();
+            if (bPid == -1) {
+                bPid = getAvailableBPid();
+            }
             if (bPid == -1) {
                 mLogger.debug("No more available bPid.");
                 return null;
@@ -97,7 +100,7 @@ public class BSProcessService implements IBlackShadowService {
         } catch (RemoteException ignored) {
         }
         try {
-            return processConfig.getClient().bindApplication();
+            return processConfig.getClient().bindApplication(processConfig.getPluginKey());
         } catch (RemoteException e) {
             mLogger.debug("bindApplication error.");
             return false;
@@ -159,29 +162,31 @@ public class BSProcessService implements IBlackShadowService {
                     }
                     bundle.setClassLoader(PluginConfig.class.getClassLoader());
                     IBinder client = bundle.getBinder("client");
-                    PluginConfig pluginConfig = bundle.getParcelable("pluginConfig");
-                    if (client == null || pluginConfig == null) {
+                    ArrayList<PluginConfig> pluginConfigs = bundle.getParcelableArrayList("pluginConfig");
+                    if (client == null || pluginConfigs == null) {
                         Process.killProcess(runningAppProcess.pid);
                         return;
                     }
-                    ProcessConfig processConfig = new ProcessConfig();
-                    processConfig.setPluginKey(pluginConfig.getPluginKey());
-                    processConfig.setInstalledApk(pluginConfig.getInstalledApk());
-                    processConfig.setPid(runningAppProcess.pid);
-                    processConfig.setBPid(bPid);
-                    processConfig.setClient(IBlackShadowClient.Stub.asInterface(client));
-                    try {
-                        client.linkToDeath(new IBinder.DeathRecipient() {
-                            @Override
-                            public void binderDied() {
-                                client.unlinkToDeath(this, 0);
-                                stopProcess(processConfig);
-                            }
-                        }, 0);
-                    } catch (RemoteException ignored) {
+                    for (PluginConfig pluginConfig : pluginConfigs) {
+                        ProcessConfig processConfig = new ProcessConfig();
+                        processConfig.setPluginKey(pluginConfig.getPluginKey());
+                        processConfig.setInstalledApk(pluginConfig.getInstalledApk());
+                        processConfig.setPid(runningAppProcess.pid);
+                        processConfig.setBPid(bPid);
+                        processConfig.setClient(IBlackShadowClient.Stub.asInterface(client));
+                        try {
+                            client.linkToDeath(new IBinder.DeathRecipient() {
+                                @Override
+                                public void binderDied() {
+                                    client.unlinkToDeath(this, 0);
+                                    stopProcess(processConfig);
+                                }
+                            }, 0);
+                        } catch (RemoteException ignored) {
+                        }
+                        mLogger.debug("recoveryProcess: " + processConfig);
+                        mProcessConfigMap.put(processConfig.getPluginKey(), processConfig);
                     }
-                    mLogger.debug("recoveryProcess: " + processConfig);
-                    mProcessConfigMap.put(processConfig.getPluginKey(), processConfig);
                 }
             }
         }

@@ -10,7 +10,7 @@ import android.content.Intent;
 import java.util.List;
 
 interface IBSManagerService {
-    InstallResult installPlugin(String pluginPath, String pluginKey, in String[] hostWhiteList, in Intent launcher);
+    InstallResult installPlugin(String pluginKey, String pluginPath, int process, in String[] hostWhiteList, in Intent launcher);
 
     boolean launchPlugin(String pluginKey, in Intent launcher);
     boolean callApplication(String pluginKey);

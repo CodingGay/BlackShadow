@@ -24,6 +24,7 @@ import com.tencent.shadow.core.common.InstalledApk;
 import com.tencent.shadow.core.loader.ShadowPluginLoader;
 import com.tencent.shadow.core.loader.exceptions.LoadPluginException;
 import com.tencent.shadow.core.loader.managers.ComponentManager;
+import com.tencent.shadow.core.runtime.container.DelegateProviderHolder;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -34,12 +35,10 @@ import top.niunaijun.shadow.common.PluginConfig;
 public class BSPluginLoader extends ShadowPluginLoader {
 
     private final ComponentManager mComponentManager;
-    private final PluginConfig mPluginConfig;
 
-    public BSPluginLoader(Context hostAppContext, PluginConfig pluginConfig) {
+    public BSPluginLoader(Context hostAppContext, int bPid) {
         super(hostAppContext);
-        this.mComponentManager = new BSComponentManager(hostAppContext, pluginConfig);
-        this.mPluginConfig = pluginConfig;
+        this.mComponentManager = new BSComponentManager(hostAppContext, bPid);
     }
 
     @NotNull
@@ -51,7 +50,7 @@ public class BSPluginLoader extends ShadowPluginLoader {
     @NotNull
     @Override
     public String getDelegateProviderKey() {
-        return this.mPluginConfig.getPluginKey();
+        return DelegateProviderHolder.DEFAULT_KEY;
     }
 
     @NotNull

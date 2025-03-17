@@ -33,7 +33,7 @@ public class PluginContentProvider extends ContentProvider {
             PluginConfig config = extras.getParcelable("pluginConfig");
             BlackShadowClient.get().initConfig(config);
         } else if ("getConfig".equals(method)) {
-            bundle.putParcelable("pluginConfig", BlackShadowClient.get().getConfig());
+            bundle.putParcelableArrayList("pluginConfig", BlackShadowClient.get().getConfig());
         }
         bundle.putBinder("client", BlackShadowClient.get());
         return bundle;

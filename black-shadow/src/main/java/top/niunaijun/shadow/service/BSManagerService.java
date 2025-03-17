@@ -53,14 +53,14 @@ public class BSManagerService extends IBSManagerService.Stub implements IBlackSh
     }
 
     @Override
-    public InstallResult installPlugin(String pluginKey, String pluginPath, String[] hostWhiteList, Intent launcher) {
+    public InstallResult installPlugin(String pluginKey, String pluginPath, int process, String[] hostWhiteList, Intent launcher) {
         boolean deleteSourceFile = false;
         InstallResult installResult = new InstallResult(true, "", pluginKey);
         mLogger.debug("installPlugin: " + pluginKey + " " + pluginPath);
             // 正在运行则不安装，这个根据自己业务需求来决定是否使用
-            if (BSProcessService.get().isRunning(pluginKey)) {
-                return new InstallResult(false, "plugin is running.", pluginKey);
-            }
+//            if (BSProcessService.get().isRunning(pluginKey)) {
+//                return new InstallResult(false, "plugin is running.", pluginKey);
+//            }
             try {
                 PackageInfo packageArchiveInfo = BlackShadow.getContext().getPackageManager().getPackageArchiveInfo(pluginPath, PackageManager.GET_ACTIVITIES);
                 if (packageArchiveInfo == null) {
@@ -117,7 +117,7 @@ public class BSManagerService extends IBSManagerService.Stub implements IBlackSh
                     if (launcher != null && launcher.getComponent() != null) {
                         launcher.setComponent(new ComponentName(packageArchiveInfo.packageName, launcher.getComponent().getClassName()));
                     }
-                    mInstalledApkMap.put(pluginKey, new InstalledPlugin(pluginKey, plugin, packageArchiveInfo, launcher));
+                    mInstalledApkMap.put(pluginKey, new InstalledPlugin(pluginKey, plugin, packageArchiveInfo, launcher, process));
                     save();
                     mLogger.debug("installPlugin OK: " + installedApk);
                 }
@@ -140,7 +140,8 @@ public class BSManagerService extends IBSManagerService.Stub implements IBlackSh
                     mLogger.debug(pluginKey + " not installed.");
                     return false;
                 }
-                ProcessConfig processConfig = BSProcessService.get().startProcess(pluginKey, Objects.requireNonNull(mInstalledApkMap.get(pluginKey)).installedApk);
+                InstalledPlugin installedPlugin = mInstalledApkMap.get(pluginKey);
+                ProcessConfig processConfig = BSProcessService.get().startProcess(pluginKey, Objects.requireNonNull(installedPlugin).installedApk, installedPlugin.process);
                 if (processConfig == null) {
                     throw new RemoteException("startProcess error.");
                 }
@@ -162,7 +163,8 @@ public class BSManagerService extends IBSManagerService.Stub implements IBlackSh
                 mLogger.debug(pluginKey + " not installed.");
                 return false;
             }
-            ProcessConfig processConfig = BSProcessService.get().startProcess(pluginKey, Objects.requireNonNull(mInstalledApkMap.get(pluginKey)).installedApk);
+            InstalledPlugin installedPlugin = mInstalledApkMap.get(pluginKey);
+            ProcessConfig processConfig = BSProcessService.get().startProcess(pluginKey, Objects.requireNonNull(installedPlugin).installedApk, installedPlugin.process);
             if (processConfig == null) {
                 throw new RemoteException("startProcess error.");
             }
