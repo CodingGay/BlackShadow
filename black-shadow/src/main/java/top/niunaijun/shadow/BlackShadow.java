@@ -78,12 +78,14 @@ public class BlackShadow {
         LoggerFactory.setILoggerFactory(new AndroidLogLoggerFactory());
 
         String processName = getProcessName(application);
-        if (processName.contains(application.getString(R.string.black_shadow_plugin_name))) {
+        if (processName.equals(mContext.getPackageName())) {
+            mProcessType = ProcessType.Host;
+        } else if (processName.contains(application.getString(R.string.black_shadow_plugin_name))) {
             mProcessType = ProcessType.Plugin;
         } else if (processName.contains(application.getString(R.string.black_shadow_service_name))) {
             mProcessType = ProcessType.Server;
         } else {
-            mProcessType = ProcessType.Host;
+            mProcessType = ProcessType.OTHER;
         }
 
         if (isHostProcess()) {
@@ -230,5 +232,6 @@ public class BlackShadow {
          * Host process
          */
         Host,
+        OTHER,
     }
 }
